@@ -18,6 +18,35 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+function computeChildrenCounts(events) {
+    const counts = {};
+    events.forEach(e => counts[e.startupStep.id] = 0);
+    events.forEach(e => {
+        if (e.startupStep.parentId && counts[e.startupStep.parentId] !== undefined) {
+            counts[e.startupStep.parentId]++;
+        }
+    });
+    events.forEach(e => e.childrenCount = counts[e.startupStep.id] || 0);
+}
+
+function buildChildrenMap(events) {
+    const map = {};
+    events.forEach(e => map[e.startupStep.id] = []);
+    events.forEach(e => {
+        if (e.startupStep.parentId && map[e.startupStep.parentId]) {
+            map[e.startupStep.parentId].push(e);
+        }
+    });
+    return map;
+}
+
+function toggleChildren(rowId) {
+    const childRows = document.querySelectorAll(`.child-of-${rowId}`);
+    childRows.forEach(row => {
+        row.style.display = (row.style.display === 'none') ? 'flex' : 'none';
+    });
+}
+
 function renderTimeline(data) {
     const events = data.timeline.events;
     events.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
@@ -26,6 +55,9 @@ function renderTimeline(data) {
     const endTime = Math.max(...events.map(e => new Date(e.endTime).getTime()));
     const totalDuration = endTime - startTime;
     
+    computeChildrenCounts(events);
+    const childrenMap = buildChildrenMap(events);
+
     // Clear and setup columns
     const namesColumn = document.getElementById('timeline-names');
     const timelineColumn = document.getElementById('timeline-lines');
@@ -56,6 +88,19 @@ function renderTimeline(data) {
         nameRow.appendChild(nameLabel);
         namesColumn.appendChild(nameRow);
         
+        // Add expand/collapse indicator if children exist
+        if (childrenMap[event.startupStep.id] && childrenMap[event.startupStep.id].length) {
+            const toggleIcon = document.createElement('span');
+            toggleIcon.textContent = '▼';
+            toggleIcon.style.cursor = 'pointer';
+            toggleIcon.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleIcon.textContent = (toggleIcon.textContent === '▼') ? '▶' : '▼';
+                toggleChildren(event.startupStep.id);
+            });
+            nameLabel.prepend(toggleIcon, ' ');
+        }
+
         // Create a row in timeline column for the timeline event
         const timelineRow = document.createElement('div');
         timelineRow.className = 'timeline-row';
@@ -81,6 +126,46 @@ function renderTimeline(data) {
         
         timelineRow.appendChild(item);
         timelineColumn.appendChild(timelineRow);
+
+        // Render child rows
+        if (childrenMap[event.startupStep.id] && childrenMap[event.startupStep.id].length) {
+            childrenMap[event.startupStep.id].forEach(childEvent => {
+                const childNameRow = document.createElement('div');
+                childNameRow.className = `timeline-row child-of-${event.startupStep.id}`;
+                childNameRow.style.display = 'flex';
+                const childNameLabel = document.createElement('div');
+                childNameLabel.className = 'name-label';
+                childNameLabel.textContent = childEvent.startupStep.name;
+                childNameRow.appendChild(childNameLabel);
+                namesColumn.appendChild(childNameRow);
+
+                const childTimelineRow = document.createElement('div');
+                childTimelineRow.className = `timeline-row child-of-${event.startupStep.id}`;
+                childTimelineRow.style.display = 'flex';
+
+                const childEventStart = new Date(childEvent.startTime).getTime();
+                const childEventEnd = new Date(childEvent.endTime).getTime();
+                const childRelativeStart = ((childEventStart - startTime) / totalDuration) * containerWidth;
+                const childWidth = ((childEventEnd - childEventStart) / totalDuration) * containerWidth;
+
+                const childItem = document.createElement('div');
+                childItem.className = `timeline-item ${getEventType(childEvent.startupStep.name)}`;
+                childItem.style.left = `${childRelativeStart}px`;
+                childItem.style.width = `${Math.max(2, childWidth)}px`;
+                childItem.style.top = '0px'; // Within its row
+
+                const childDuration = document.createElement('div');
+                childDuration.className = 'timeline-duration';
+                childDuration.textContent = formatDurationAccurate(childEventEnd - childEventStart);
+                childItem.appendChild(childDuration);
+
+                childItem.addEventListener('mouseover', (e) => showEnhancedTooltip(e, childEvent, startTime));
+                childItem.addEventListener('mouseout', hideTooltip);
+
+                childTimelineRow.appendChild(childItem);
+                timelineColumn.appendChild(childTimelineRow);
+            });
+        }
     });
 }
 
@@ -134,6 +219,7 @@ function showEnhancedTooltip(e, event, startTime) {
         Time: ${start.toISOString().split('T')[1].slice(0, -1)}<br>
         Tags: ${tagsContent}
         ${event.startupStep.parentId ? `<br>Parent ID: ${event.startupStep.parentId}` : ''}
+        <br>Children: ${event.childrenCount}
     `;
     
     // Define timelineContainer locally for computing position
