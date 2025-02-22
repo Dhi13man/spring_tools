@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
     const fileInput = document.getElementById('jsonFile');
-    const timelineContainer = document.getElementById('timeline');
 
     fileInput.addEventListener('change', (e) => {
         const file = e.target.files[0];
@@ -11,9 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 const data = JSON.parse(event.target.result);
                 renderTimeline(data);
-                timelineContainer.style.display = 'block'; // Show timeline after data is loaded
             } catch (error) {
-                alert('Error parsing JSON file: ' + error.message);
+                console.error('Error parsing JSON file:', error);
             }
         };
         reader.readAsText(file);
@@ -28,18 +26,20 @@ function renderTimeline(data) {
     const endTime = Math.max(...events.map(e => new Date(e.endTime).getTime()));
     const totalDuration = endTime - startTime;
     
-    // Update header in timeline-lines column with the timeline ruler
+    // Clear and setup columns
+    const namesColumn = document.getElementById('timeline-names');
+    const timelineColumn = document.getElementById('timeline-lines');
+    
+    // Setup timeline ruler header
     const rulerHeader = document.getElementById('timeline-ruler-header');
-    rulerHeader.innerHTML = ''; // Clear previous content
+    rulerHeader.innerHTML = '';
     rulerHeader.appendChild(createTimelineRuler(startTime, endTime));
     
     // Populate names column
-    const namesColumn = document.getElementById('timeline-names');
     // Remove previous rows if any (note: header remains)
     namesColumn.querySelectorAll('.timeline-row').forEach(el => el.remove());
     
     // Populate timeline rows in timeline-lines column
-    const timelineColumn = document.getElementById('timeline-lines');
     // Remove previously rendered rows (keeping header intact)
     timelineColumn.querySelectorAll('.timeline-row').forEach(el => el.remove());
     
@@ -137,7 +137,7 @@ function showEnhancedTooltip(e, event, startTime) {
     `;
     
     // Define timelineContainer locally for computing position
-    const timelineContainer = document.getElementById('timeline');
+    const timelineContainer = document.getElementById('timeline-wrapper');
     const rect = timelineContainer.getBoundingClientRect();
     const x = Math.min(e.pageX + 10, window.innerWidth - 300);
     const y = Math.min(e.pageY + 10, window.innerHeight - 100);

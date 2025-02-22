@@ -148,12 +148,26 @@
 }
 
 .column-header {
+    height: 50px;
+    padding: 0;
     background: #f8f9fa;
-    border-bottom: 1px solid #eee;
-    padding: 10px;
+    border-bottom: 2px solid #ddd;
     font-weight: bold;
     font-size: 14px;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+#timeline-names .column-header {
+    padding-left: 10px;
+}
+
+#timeline-lines .column-header {
+    padding: 0;
+    overflow: hidden;
 }
 
 /* Names column style */
@@ -177,10 +191,11 @@
 
 /* Styling for timeline ruler remains unchanged */
 .timeline-ruler {
+    width: 100%;
+    height: 100%;
     position: relative;
-    height: 25px;
-    border-bottom: 1px solid #ddd;
-    background: #f8f9fa;
+    background: transparent;
+    border: none;
 }
 
 .time-marker {
@@ -193,13 +208,12 @@
 
 .time-marker span {
     position: absolute;
-    top: -20px;
-    left: -30px;
+    top: 5px;
+    left: 2px;
     font-size: 10px;
-    color: #666;
-    transform: rotate(-45deg);
-    transform-origin: left;
     white-space: nowrap;
+    transform: rotate(-45deg);
+    transform-origin: left top;
 }
 
 /* Timeline rows and event styling remain unchanged */
