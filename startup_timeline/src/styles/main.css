@@ -176,10 +176,21 @@
     font-family: monospace;
     font-size: 10px;
     color: #666;
-    /* Keep names column fixed on horizontal scroll */
     position: sticky;
     left: 0;
     background: #f8f9fa;
+    overflow-x: auto;  /* Make names column scrollable horizontally */
+    min-width: 250px;  /* Maintain minimum width */
+}
+
+.name-label {
+    padding: 4px 10px;
+    white-space: nowrap;  /* Prevent text wrapping */
+}
+
+/* Add styles for child indentation */
+.child-step {
+    padding-left: 20px;  /* Add indentation for child steps */
 }
 
 /* Timeline column style */

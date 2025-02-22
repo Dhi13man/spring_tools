@@ -138,7 +138,7 @@ function renderTimeline(data) {
                 childNameRow.className = `timeline-row child-of-${event.startupStep.id}`;
                 childNameRow.style.display = 'flex';
                 const childNameLabel = document.createElement('div');
-                childNameLabel.className = 'name-label';
+                childNameLabel.className = 'name-label child-step';  // Add child-step class
                 childNameLabel.textContent = childEvent.startupStep.name;
                 childNameRow.appendChild(childNameLabel);
                 namesColumn.appendChild(childNameRow);
