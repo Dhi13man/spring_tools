@@ -70,9 +70,11 @@
     transform: translateY(-50%);
     text-align: right;
     white-space: nowrap;
-    font-size: 12px;
+    font-size: 10px; /* reduced font size */
     color: #666;
-    width: 200px;
+    max-width: 150px; /* limit width */
+    overflow: hidden; /* hide overflow */
+    text-overflow: ellipsis; /* add ellipsis for long text */
     font-family: monospace;
 }
 
