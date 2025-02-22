@@ -120,24 +120,29 @@ function showEnhancedTooltip(e, event, startTime) {
     const duration = end.getTime() - start.getTime();
     const relativeStart = (start.getTime() - startTime) / 1000;
     
+    // Prepare tags string
+    const tagsContent = (event.startupStep.tags && event.startupStep.tags.length)
+        ? event.startupStep.tags.map(tag => `${tag.key}: ${tag.value}`).join(', ')
+        : 'No tags';
+    
     tooltip.innerHTML = `
-        <strong>${event.startupStep.name}</strong><br>
+        <strong>Step: ${event.startupStep.name} (ID: ${event.startupStep.id})</strong><br>
         Duration: ${formatDurationAccurate(duration)}<br>
         Start: +${relativeStart.toFixed(3)}s<br>
         Time: ${start.toISOString().split('T')[1].slice(0, -1)}<br>
-        ${event.children.length ? `Children: ${event.children.length}<br>` : ''}
-        ${event.startupStep.tags?.length ? `Tags: ${event.startupStep.tags.join(', ')}<br>` : ''}
-        ID: ${event.startupStep.id}
+        Tags: ${tagsContent}
         ${event.startupStep.parentId ? `<br>Parent ID: ${event.startupStep.parentId}` : ''}
     `;
     
-    // Position tooltip within viewport
+    // Define timelineContainer locally for computing position
+    const timelineContainer = document.getElementById('timeline');
     const rect = timelineContainer.getBoundingClientRect();
     const x = Math.min(e.pageX + 10, window.innerWidth - 300);
-    const y = Math.min(e.pageY + 10, window.innerHeight - tooltip.offsetHeight - 10);
+    const y = Math.min(e.pageY + 10, window.innerHeight - 100);
     
-    tooltip.style.left = `${x}px`;
-    tooltip.style.top = `${y}px`;
+    // Set CSS custom properties instead of inline left/top styles
+    tooltip.style.setProperty('--tooltip-left', `${x}px`);
+    tooltip.style.setProperty('--tooltip-top', `${y}px`);
     
     document.body.appendChild(tooltip);
 }

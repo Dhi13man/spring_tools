@@ -90,6 +90,8 @@
 
 .tooltip {
     position: fixed;
+    left: var(--tooltip-left, 0);
+    top: var(--tooltip-top, 0);
     background: rgba(0,0,0,0.8);
     color: white;
     padding: 8px 12px;
