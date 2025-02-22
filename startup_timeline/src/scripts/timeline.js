@@ -22,39 +22,44 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function renderTimeline(data) {
     const events = data.timeline.events;
-    // sort events by startTime (ignoring parent relationships for simplicity)
     events.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
     
     const startTime = new Date(data.timeline.startTime).getTime();
     const endTime = Math.max(...events.map(e => new Date(e.endTime).getTime()));
     const totalDuration = endTime - startTime;
     
-    const timelineContainer = document.getElementById('timeline');
-    timelineContainer.innerHTML = '';
+    // Update header in timeline-lines column with the timeline ruler
+    const rulerHeader = document.getElementById('timeline-ruler-header');
+    rulerHeader.innerHTML = ''; // Clear previous content
+    rulerHeader.appendChild(createTimelineRuler(startTime, endTime));
     
-    // Add header
-    const header = document.createElement('div');
-    header.className = 'timeline-header';
-    header.innerHTML = `
-        <div>Total Startup Time: ${formatDurationAccurate(totalDuration)}</div>
-        <div>Start: ${new Date(startTime).toISOString().split('T')[1].slice(0, -1)}</div>
-        <div>Steps: ${events.length}</div>
-    `;
-    timelineContainer.appendChild(header);
+    // Populate names column
+    const namesColumn = document.getElementById('timeline-names');
+    // Remove previous rows if any (note: header remains)
+    namesColumn.querySelectorAll('.timeline-row').forEach(el => el.remove());
     
-    // Add timeline ruler with absolute timestamps
-    const ruler = createTimelineRuler(startTime, endTime);
-    timelineContainer.appendChild(ruler);
+    // Populate timeline rows in timeline-lines column
+    const timelineColumn = document.getElementById('timeline-lines');
+    // Remove previously rendered rows (keeping header intact)
+    timelineColumn.querySelectorAll('.timeline-row').forEach(el => el.remove());
     
-    // Fixed header height (use same in CSS)
-    const headerHeight = 80;
-    const containerWidth = timelineContainer.offsetWidth - 300; // reserve left margin for labels
-    const containerLeft = 250;
-    
-    // Set container height based on number of events and a fixed vertical spacing of 25px
-    timelineContainer.style.height = `${headerHeight + events.length * 25}px`;
+    // Get available width of timeline area
+    const containerWidth = timelineColumn.offsetWidth;
     
     events.forEach((event, index) => {
+        // Create a row in names column
+        const nameRow = document.createElement('div');
+        nameRow.className = 'timeline-row';
+        const nameLabel = document.createElement('div');
+        nameLabel.className = 'name-label';
+        nameLabel.textContent = event.startupStep.name;
+        nameRow.appendChild(nameLabel);
+        namesColumn.appendChild(nameRow);
+        
+        // Create a row in timeline column for the timeline event
+        const timelineRow = document.createElement('div');
+        timelineRow.className = 'timeline-row';
+        
         const eventStart = new Date(event.startTime).getTime();
         const eventEnd = new Date(event.endTime).getTime();
         const relativeStart = ((eventStart - startTime) / totalDuration) * containerWidth;
@@ -62,23 +67,20 @@ function renderTimeline(data) {
         
         const item = document.createElement('div');
         item.className = `timeline-item ${getEventType(event.startupStep.name)}`;
-        item.style.left = `${containerLeft + relativeStart}px`;
+        item.style.left = `${relativeStart}px`;
         item.style.width = `${Math.max(2, width)}px`;
-        item.style.top = `${headerHeight + (index * 25)}px`;
-        
-        const label = document.createElement('div');
-        label.className = 'timeline-label';
-        label.textContent = event.startupStep.name;
+        item.style.top = '0px'; // Within its row
         
         const duration = document.createElement('div');
         duration.className = 'timeline-duration';
         duration.textContent = formatDurationAccurate(eventEnd - eventStart);
-        
-        item.appendChild(label);
         item.appendChild(duration);
+        
         item.addEventListener('mouseover', (e) => showEnhancedTooltip(e, event, startTime));
         item.addEventListener('mouseout', hideTooltip);
-        timelineContainer.appendChild(item);
+        
+        timelineRow.appendChild(item);
+        timelineColumn.appendChild(timelineRow);
     });
 }
 
