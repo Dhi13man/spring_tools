@@ -49,6 +49,10 @@ function toggleChildren(rowId) {
 
 function renderTimeline(data) {
     const events = data.timeline.events;
+    
+    // Add metadata rendering
+    renderMetadata(data);
+    
     events.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
     
     const startTime = new Date(data.timeline.startTime).getTime();
@@ -167,6 +171,31 @@ function renderTimeline(data) {
             });
         }
     });
+}
+
+function renderMetadata(data) {
+    const startTime = new Date(data.timeline.startTime);
+    // Calculate end time from the latest event end time
+    const endTime = new Date(Math.max(...data.timeline.events.map(e => new Date(e.endTime).getTime())));
+    const totalDuration = endTime - startTime;
+    
+    const metadataSection = document.getElementById('metadata-section');
+    metadataSection.innerHTML = `
+        <div class="metadata-grid">
+            <div class="metadata-item">
+                <span class="metadata-label">Total Startup Time:</span>
+                <span class="metadata-value">${formatDurationAccurate(totalDuration)}</span>
+            </div>
+            <div class="metadata-item">
+                <span class="metadata-label">Start Time:</span>
+                <span class="metadata-value">${startTime.toLocaleTimeString()}</span>
+            </div>
+            <div class="metadata-item">
+                <span class="metadata-label">Total Steps:</span>
+                <span class="metadata-value">${data.timeline.events.length}</span>
+            </div>
+        </div>
+    `;
 }
 
 function createTimelineRuler(startTime, endTime) {
