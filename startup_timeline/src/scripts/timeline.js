@@ -93,6 +93,46 @@ function toggleChildren(rowId, isExpanded) {
     });
 }
 
+function transformEvents(events) {
+    // First ensure all events have startupStep
+    events.forEach((event, index) => {
+        if (!event.startupStep) {
+            event.startupStep = {
+                id: index,
+                name: `Event ${index}`
+            };
+        }
+        // Ensure ID exists
+        if (!event.startupStep.id) {
+            event.startupStep.id = index;
+        }
+        // Ensure name exists
+        if (!event.startupStep.name) {
+            event.startupStep.name = `Event ${event.startupStep.id}`;
+        }
+    });
+
+    // Build parent-child relationships
+    const eventsById = new Map();
+    events.forEach(event => {
+        eventsById.set(event.startupStep.id, event);
+    });
+
+    // Now connect parents and children
+    events.forEach(event => {
+        if (event.startupStep.parentId !== undefined) {
+            const parent = eventsById.get(event.startupStep.parentId);
+            if (parent) {
+                // Ensure parent has children array
+                if (!parent.children) {
+                    parent.children = [];
+                }
+                parent.children.push(event);
+            }
+        }
+    });
+}
+
 function renderTimeline(data) {
     // Get references to required DOM elements
     const namesColumn = document.getElementById('timeline-names');
@@ -113,6 +153,9 @@ function renderTimeline(data) {
 
     const events = data.timeline.events;
     
+    // Transform events first
+    transformEvents(events);
+    
     // Add metadata rendering
     renderMetadata(data);
     
@@ -125,8 +168,11 @@ function renderTimeline(data) {
     computeChildrenCounts(events);
     const childrenMap = buildChildrenMap(events);
     
-    // Get root level events (events without parents)
-    const rootEvents = events.filter(e => e.startupStep.parentId === undefined);
+    // Get root level events (events without parents or with missing parents)
+    const rootEvents = events.filter(e => 
+        !e.startupStep.parentId || 
+        !events.find(p => p.startupStep.id === e.startupStep.parentId)
+    );
     
     // Setup timeline ruler header
     rulerHeader.appendChild(createTimelineRuler(startTime, endTime));
