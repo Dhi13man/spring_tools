@@ -128,11 +128,6 @@ function renderTimeline(data) {
     // Get root level events (events without parents)
     const rootEvents = events.filter(e => e.startupStep.parentId === undefined);
     
-    // Clear columns
-    namesColumn.innerHTML = '';
-    timelineColumn.innerHTML = '';
-    rulerHeader.innerHTML = '';
-    
     // Setup timeline ruler header
     rulerHeader.appendChild(createTimelineRuler(startTime, endTime));
     
