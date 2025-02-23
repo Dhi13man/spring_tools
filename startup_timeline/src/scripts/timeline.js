@@ -1,6 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     const fileInput = document.getElementById('jsonFile');
+    const jsonEditor = document.getElementById('jsonEditor');
 
+    // Handle file uploads
     fileInput.addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (!file) return;
@@ -9,6 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
         reader.onload = (event) => {
             try {
                 const data = JSON.parse(event.target.result);
+                // Update the editor with formatted JSON
+                jsonEditor.value = JSON.stringify(data, null, 2);
                 renderTimeline(data);
             } catch (error) {
                 console.error('Error parsing JSON file:', error);
@@ -16,7 +20,38 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         reader.readAsText(file);
     });
+
+    // Handle manual JSON editing
+    let debounceTimer;
+    jsonEditor.addEventListener('input', () => {
+        // Clear previous timer
+        clearTimeout(debounceTimer);
+        
+        // Set new timer to update after typing stops
+        debounceTimer = setTimeout(() => {
+            try {
+                const jsonText = jsonEditor.value.trim();
+                if (!jsonText) {
+                    clearTimeline();
+                    return;
+                }
+                
+                const data = JSON.parse(jsonText);
+                renderTimeline(data);
+            } catch (error) {
+                console.error('Invalid JSON:', error);
+            }
+        }, 500); // Wait 500ms after typing stops
+    });
 });
+
+function clearTimeline() {
+    const elements = ['timeline-names', 'timeline-lines', 'timeline-ruler-header', 'metadata-section'];
+    elements.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) element.innerHTML = '';
+    });
+}
 
 function computeChildrenCounts(events) {
     const counts = new Map();
@@ -362,4 +397,14 @@ function formatDurationAccurate(ms) {
 function hideTooltip() {
     const tooltips = document.querySelectorAll('.tooltip');
     tooltips.forEach(t => t.remove());
+}
+
+function parseHighPrecisionTime(isoString) {
+    // Extract fractional parts to preserve beyond ms
+    const d = new Date(isoString);
+    const baseMs = d.getTime();
+    const fractionMatch = isoString.match(/\.(\d+)Z$/);
+    if (!fractionMatch) return baseMs;
+    const fraction = fractionMatch[1].padEnd(9, '0'); 
+    return baseMs + parseInt(fraction, 10) / 1e6;
 }

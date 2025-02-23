@@ -1,281 +1,312 @@
 .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
 #timeline {
-    position: relative;
-    margin: 40px 0;
-    padding-top: 30px;
-    border-left: 1px solid #eee;
-    border-bottom: 1px solid #eee;
-    background: #f8f9fa;
+  position: relative;
+  margin: 40px 0;
+  padding-top: 30px;
+  border-left: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  background: #f8f9fa;
 }
 
 .timeline-ruler {
-    position: absolute;
-    top: 40px;
-    left: 0;
-    right: 0;
-    height: 25px;
-    border-bottom: 1px solid #ddd;
+  position: absolute;
+  top: 40px;
+  left: 0;
+  right: 0;
+  height: 25px;
+  border-bottom: 1px solid #ddd;
 }
 
 .time-marker {
-    position: absolute;
-    top: 0;
-    width: 1px;
-    height: 100%;
-    border-left: 1px solid #eee;
+  position: absolute;
+  top: 0;
+  width: 1px;
+  height: 100%;
+  border-left: 1px solid #eee;
 }
 
 .time-marker span {
-    position: absolute;
-    top: -20px;
-    left: -30px;
-    font-size: 10px;
-    color: #666;
-    transform: rotate(-45deg);
-    transform-origin: left;
-    white-space: nowrap;
+  position: absolute;
+  top: -20px;
+  left: -30px;
+  font-size: 10px;
+  color: #666;
+  transform: rotate(-45deg);
+  transform-origin: left;
+  white-space: nowrap;
 }
 
 .timeline-item {
-    position: absolute;
-    height: 18px;
-    border-radius: 3px;
-    margin: 2px 0;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+  position: absolute;
+  height: 18px;
+  border-radius: 3px;
+  margin: 2px 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
 }
 
 .timeline-item:hover {
-    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-    transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transform: translateY(-1px);
 }
 
 /* Color coding based on step types */
-.timeline-item.application { background: #4CAF50; }
-.timeline-item.context { background: #2196F3; }
-.timeline-item.beans { background: #9C27B0; }
-.timeline-item.web { background: #FF9800; }
-.timeline-item.startup { background: #607D8B; }
+.timeline-item.application {
+  background: #4caf50;
+}
+.timeline-item.context {
+  background: #2196f3;
+}
+.timeline-item.beans {
+  background: #9c27b0;
+}
+.timeline-item.web {
+  background: #ff9800;
+}
+.timeline-item.startup {
+  background: #607d8b;
+}
 
 .timeline-label {
-    position: absolute;
-    right: calc(100% + 10px);
-    top: 50%;
-    transform: translateY(-50%);
-    text-align: right;
-    white-space: nowrap;
-    font-size: 10px; /* reduced font size */
-    color: #666;
-    max-width: 150px; /* limit width */
-    overflow: hidden; /* hide overflow */
-    text-overflow: ellipsis; /* add ellipsis for long text */
-    font-family: monospace;
+  position: absolute;
+  right: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%);
+  text-align: right;
+  white-space: nowrap;
+  font-size: 10px; /* reduced font size */
+  color: #666;
+  max-width: 150px; /* limit width */
+  overflow: hidden; /* hide overflow */
+  text-overflow: ellipsis; /* add ellipsis for long text */
+  font-family: monospace;
 }
 
 .timeline-duration {
-    position: absolute;
-    left: calc(100% + 5px);
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 12px;
-    color: #666;
-    font-family: monospace;
+  position: absolute;
+  left: calc(100% + 5px);
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+  color: #666;
+  font-family: monospace;
 }
 
 .tooltip {
-    position: fixed;
-    left: var(--tooltip-left, 0);
-    top: var(--tooltip-top, 0);
-    background: rgba(0,0,0,0.8);
-    color: white;
-    padding: 8px 12px;
-    border-radius: 4px;
-    font-size: 11px;
-    pointer-events: none;
-    z-index: 1000;
-    max-width: 300px;
-    line-height: 1.5;
-    white-space: nowrap;
-    font-family: monospace;
+  position: fixed;
+  left: var(--tooltip-left, 0);
+  top: var(--tooltip-top, 0);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 11px;
+  pointer-events: none;
+  z-index: 1000;
+  max-width: 300px;
+  line-height: 1.5;
+  white-space: nowrap;
+  font-family: monospace;
 }
 
 .upload-section {
-    margin: 20px 0;
-    padding: 20px;
-    border: 2px dashed #ccc;
-    border-radius: 5px;
-    text-align: center;
+  margin: 20px 0;
+  padding: 20px;
+  border: 2px dashed #ccc;
+  border-radius: 5px;
+  text-align: center;
+  width: 100%;
 }
 
 .upload-label {
-    display: block;
-    margin-bottom: 10px;
-    font-size: 16px;
-    color: #666;
+  display: block;
+  margin-bottom: 10px;
+  font-size: 16px;
+  color: #666;
 }
 
 #jsonFile {
-    display: block;
-    margin: 0 auto;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    background: #f9f9f9;
+  display: block;
+  margin: 0 auto;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  background: #f9f9f9;
 }
 
 .timeline-header {
-    padding: 10px 0;
-    margin: 10px 0 20px 250px;
-    font-size: 13px;
-    color: #666;
-    display: flex;
-    gap: 20px;
+  padding: 10px 0;
+  margin: 10px 0 20px 250px;
+  font-size: 13px;
+  color: #666;
+  display: flex;
+  gap: 20px;
 }
 
 #timeline-wrapper {
-    display: grid;
-    grid-template-columns: 250px 1fr;
-    gap: 0;
-    margin: 40px 0;
-    border: 1px solid #eee;
-    background: #f8f9fa;
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  gap: 0;
+  margin: 40px 0;
+  border: 1px solid #eee;
+  background: #f8f9fa;
 }
 
 .column-header {
-    height: 50px;
-    padding: 0;
-    background: #f8f9fa;
-    border-bottom: 2px solid #ddd;
-    font-weight: bold;
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    position: sticky;
-    top: 0;
-    z-index: 2;
+  height: 50px;
+  padding: 0;
+  background: #f8f9fa;
+  border-bottom: 2px solid #ddd;
+  font-weight: bold;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 2;
 }
 
 #timeline-names .column-header {
-    padding-left: 10px;
+  padding-left: 10px;
 }
 
 #timeline-lines .column-header {
-    padding: 0;
-    overflow: hidden;
+  padding: 0;
+  overflow: hidden;
 }
 
 /* Names column style */
 #timeline-names {
-    border-right: 1px solid #eee;
-    font-family: monospace;
-    font-size: 10px;
-    color: #666;
-    position: sticky;
-    left: 0;
-    background: #f8f9fa;
-    overflow-x: auto;  /* Make names column scrollable horizontally */
-    min-width: 250px;  /* Maintain minimum width */
+  border-right: 1px solid #eee;
+  font-family: monospace;
+  font-size: 10px;
+  color: #666;
+  position: sticky;
+  left: 0;
+  background: #f8f9fa;
+  overflow-x: auto; /* Make names column scrollable horizontally */
+  min-width: 250px; /* Maintain minimum width */
 }
 
 .name-label {
-    padding: 4px 10px;
-    white-space: nowrap;  /* Prevent text wrapping */
+  padding: 4px 10px;
+  white-space: nowrap; /* Prevent text wrapping */
 }
 
 /* Add styles for child indentation */
 .child-step {
-    padding-left: 20px;  /* Add indentation for child steps */
+  padding-left: 20px; /* Add indentation for child steps */
 }
 
 /* Timeline column style */
 #timeline-lines {
-    position: relative;
-    overflow-x: auto;
-    min-height: 200px;
+  position: relative;
+  overflow-x: auto;
+  min-height: 200px;
 }
 
 /* Styling for timeline ruler remains unchanged */
 .timeline-ruler {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    background: transparent;
-    border: none;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background: transparent;
+  border: none;
 }
 
 .time-marker {
-    position: absolute;
-    top: 0;
-    width: 1px;
-    height: 100%;
-    border-left: 1px solid #eee;
+  position: absolute;
+  top: 0;
+  width: 1px;
+  height: 100%;
+  border-left: 1px solid #eee;
 }
 
 .time-marker span {
-    position: absolute;
-    top: 5px;
-    left: 2px;
-    font-size: 10px;
-    white-space: nowrap;
-    transform: rotate(-45deg);
-    transform-origin: left top;
+  position: absolute;
+  top: 5px;
+  left: 2px;
+  font-size: 10px;
+  white-space: nowrap;
+  transform: rotate(-45deg);
+  transform-origin: left top;
 }
 
 /* Timeline rows and event styling remain unchanged */
 .timeline-row {
-    position: relative;
-    height: 25px;
-    border-bottom: 1px solid #f0f0f0;
+  position: relative;
+  height: 25px;
+  border-bottom: 1px solid #f0f0f0;
 }
 
 .timeline-item {
-    position: absolute;
-    height: 18px;
-    border-radius: 3px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+  position: absolute;
+  height: 18px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
 }
 
 .timeline-item:hover {
-    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-    transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transform: translateY(-1px);
 }
 
 #metadata-section {
-    background: #f8f9fa;
-    border: 1px solid #eee;
-    border-radius: 4px;
-    margin: 20px 0;
-    padding: 15px;
+  background: #f8f9fa;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  margin: 20px 0;
+  padding: 15px;
 }
 
 .metadata-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
 }
 
 .metadata-item {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .metadata-label {
-    font-size: 12px;
-    color: #666;
-    margin-bottom: 4px;
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 4px;
 }
 
 .metadata-value {
-    font-size: 16px;
-    font-weight: 600;
-    color: #333;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.input-section {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.json-editor {
+  flex: 1;
+}
+
+.json-editor textarea {
+  width: 100%;
+  height: 200px;
+  font-family: monospace;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
 }
