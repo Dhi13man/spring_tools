@@ -12,7 +12,6 @@
       
       <div class="intro-section">
         <p>Visualise and analyse your Spring Boot application's startup sequence. This tool helps you understand initialization timing and dependencies between different components.</p>
-        <h3>Timeline Categories</h3>
         <div class="legend-items">
           <div class="legend-item">
             <span class="legend-color application"></span>
@@ -38,7 +37,7 @@
       </div>
 
       <div class="data-section">
-        <h3>Input Your Data</h3>
+        <label for="jsonFile" class="upload-label"><h3>Input Your Data</h3></label>
         <p class="instruction-text">Either paste your Spring Boot startup JSON data directly into the text area below, or use the file upload button to load a JSON file.</p>
         <div class="json-editor">
           <textarea
@@ -46,9 +45,6 @@
             placeholder="Paste your JSON here..."
           ></textarea>
         </div>
-        <label for="jsonFile" class="upload-label"
-          >Upload Spring Boot Startup JSON</label
-        >
         <input type="file" id="jsonFile" accept=".json" class="upload-label" />
       </div>
       <div id="metadata-section"></div>

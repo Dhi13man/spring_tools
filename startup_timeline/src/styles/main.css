@@ -370,12 +370,6 @@ body {
   border: 1px solid var(--border);
 }
 
-.intro-section h3 {
-  margin: 0 0 15px 0;
-  font-size: 16px;
-  color: var(--text-primary);
-}
-
 .legend-items {
   display: flex;
   flex-wrap: wrap;
