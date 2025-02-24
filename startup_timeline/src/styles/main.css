@@ -53,6 +53,7 @@ body {
   display: grid;
   grid-template-columns: 280px 1fr;
   margin: 40px 0;
+  overflow-y: auto;
 }
 
 /* Names Column */
@@ -64,12 +65,14 @@ body {
   font-size: 10px;
   min-width: 250px;
   top: 0;
+  flex-direction: column;
 }
 
 /* Timeline Lines Column */
 #timeline-lines {
   min-height: 200px;
   position: relative;
+  flex-direction: column;
 }
 
 /* Column Headers */

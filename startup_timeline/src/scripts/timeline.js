@@ -153,6 +153,14 @@ function renderTimeline(data) {
         return;
     }
 
+    const namesRows = namesColumn.querySelector('.timeline-rows');
+    const timelineRows = timelineColumn.querySelector('.timeline-rows');
+    if (!namesRows || !timelineRows) return;
+
+    // Clear just the row content
+    namesRows.innerHTML = '';
+    timelineRows.innerHTML = '';
+
     const events = data.timeline.events;
     transformEvents(events);
     renderMetadata(data);
@@ -198,7 +206,7 @@ function renderTimeline(data) {
         }
 
         nameRow.appendChild(nameLabel);
-        namesColumn.appendChild(nameRow);
+        namesRows.appendChild(nameRow);
 
         // Create timeline row for the event
         const timelineRow = document.createElement('div');
@@ -225,7 +233,7 @@ function renderTimeline(data) {
         item.addEventListener('mouseout', hideTooltip);
 
         timelineRow.appendChild(item);
-        timelineColumn.appendChild(timelineRow);
+        timelineRows.appendChild(timelineRow);
 
         // Render children recursively
         (event.children || []).forEach(child => renderEvent(child, depth + 1));
