@@ -36,7 +36,29 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }, 500);
     });
+
+    const filterInputs = [document.getElementById('tagFilter'), document.getElementById('durationFilter')];
+    filterInputs.forEach(input => input?.addEventListener('input', () => {
+        try {
+            const jsonText = jsonEditor.value.trim();
+            if (!jsonText) return;
+            const data = JSON.parse(jsonText);
+            renderTimeline(data);
+        } catch (error) {
+            console.error('Invalid JSON:', error);
+        }
+    }));
 });
+
+function getFilteredEvents(events) {
+    const tagInput = document.getElementById('tagFilter')?.value?.trim().toLowerCase() || '';
+    const minDuration = parseInt(document.getElementById('durationFilter')?.value) || 0;
+    return events.filter(ev => {
+        const duration = new Date(ev.endTime).getTime() - new Date(ev.startTime).getTime();
+        const tags = (ev.startupStep?.tags || []).map(t => `${t.key}: ${t.value}`).join('|').toLowerCase();
+        return duration >= minDuration && (!tagInput || tags.includes(tagInput));
+    });
+}
 
 // Ensure each event has a valid startupStep with id and name
 function transformEvents(events) {
@@ -162,7 +184,7 @@ function renderTimeline(data) {
     namesRows.innerHTML = '';
     timelineRows.innerHTML = '';
 
-    const events = data.timeline.events;
+    let events = data.timeline.events;
     transformEvents(events);
     renderMetadata(data);
 
@@ -175,6 +197,7 @@ function renderTimeline(data) {
     const bufferedEndTime = endTime + buffer;
     const bufferedDuration = bufferedEndTime - bufferedStartTime;
 
+    events = getFilteredEvents(events);
     computeChildrenCounts(events);
     const rootEvents = buildTimelineTree(events);
     rulerHeader.appendChild(createTimelineRuler(bufferedStartTime, bufferedEndTime));
