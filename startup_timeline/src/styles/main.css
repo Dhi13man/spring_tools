@@ -266,10 +266,6 @@ body {
   white-space: nowrap;
 }
 
-.child-step {
-  padding-left: 20px;
-}
-
 .collapsed {
   display: none;
 }

@@ -196,9 +196,7 @@ function renderTimeline(data) {
         }
         const nameLabel = document.createElement('div');
         nameLabel.className = 'name-label';
-        for (let i = 0; i < depth; i++) {
-            nameLabel.classList.add('child-step');
-        }
+        nameLabel.style.marginLeft = `${depth}em`;
         nameLabel.textContent = event.startupStep.name;
 
         if ((event.children || []).length > 0) {
