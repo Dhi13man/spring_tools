@@ -2,16 +2,17 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Spring Boot Startup Timeline</title>
+    <title>Spring Boot Startup Time Visualizer - Analyze & Optimize</title>
+    <meta name="description" content="Visualize and analyze Spring Boot application startup time. Identify bottlenecks and optimize your application's startup performance with our interactive timeline visualizer." />
     <link rel="stylesheet" href="styles/main.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   </head>
   <body>
     <div class="container">
-      <h1>Spring Boot Startup Time Visualiser</h1>
+      <h1>Spring Boot Startup Time Visualizer - Optimize Application Startup</h1>
       
       <div class="intro-section">
-        <p>Visualise and analyse your Spring Boot application's startup sequence. This tool helps you understand initialization timing and dependencies between different components.</p>
+        <p>Visualise and analyse your Spring Boot application's startup sequence. This tool helps you understand initialization timing, identify performance bottlenecks, and dependencies between different components, leading to faster startup times. Optimise your Spring Boot application's startup performance with our interactive timeline.</p>
         <div class="legend-items">
           <div class="legend-item">
             <span class="legend-color application"></span>
@@ -37,8 +38,8 @@
       </div>
 
       <div class="data-section">
-        <label for="jsonFile" class="upload-label"><h3>Input Your Data</h3></label>
-        <p class="instruction-text">Either paste your Spring Boot startup JSON data directly into the text area below, or use the file upload button to load a JSON file.</p>
+        <label for="jsonFile" class="upload-label"><h3>Input Your <a href="https://docs.spring.io/spring-boot/api/rest/actuator/startup.html" target="_blank" rel="noopener noreferrer">/actuator/startup</a> JSON</h3></label>
+        <p class="instruction-text">You can get the JSON Startup data from your Spring Boot application by <a href="https://www.baeldung.com/spring-boot-actuator-startup" target="_blank" rel="noopener noreferrer">enabling and accessing</a> the <a href="https://docs.spring.io/spring-boot/api/rest/actuator/startup.html" target="_blank" rel="noopener noreferrer">Actuator</a> endpoint <code>/actuator/startup</code>.</p>
         <div class="json-editor">
           <textarea
             id="jsonEditor"
