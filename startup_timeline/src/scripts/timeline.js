@@ -105,8 +105,8 @@ function toggleChildren(rowId, isExpanded) {
     const childRows = document.querySelectorAll(`.child-of-${rowId}`);
     
     childRows.forEach(row => {
-        // Set display style based on parent's expanded state
-        row.style.display = isExpanded ? 'flex' : 'none';
+        // Remove inline display manipulation
+        row.classList.toggle('collapsed', !isExpanded);
         
         // Find if this row has a toggle button (meaning it's a parent)
         const toggleButton = row.querySelector('.name-label span');
@@ -226,7 +226,10 @@ function renderTimeline(data) {
         
         const nameLabel = document.createElement('div');
         nameLabel.className = 'name-label';
-        nameLabel.style.paddingLeft = `${depth * 20}px`;
+        // Remove inline padding, add indentation class
+        for (let i = 0; i < depth; i++) {
+            nameLabel.classList.add('child-step');
+        }
         nameLabel.textContent = event.startupStep.name;
         
         // Add expand/collapse indicator if has children
