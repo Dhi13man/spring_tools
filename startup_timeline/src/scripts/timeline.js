@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } catch (error) {
                 console.error('Error parsing JSON file:', error);
             }
+            fileInput.value = ''; // reset file input
         };
         reader.readAsText(file);
     });
