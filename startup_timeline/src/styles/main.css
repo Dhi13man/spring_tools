@@ -35,12 +35,72 @@ body {
   padding: 20px;
 }
 
+/* Timeline Container */
 #timeline {
   background: var(--surface);
   border-bottom: 1px solid var(--border);
   border-left: 1px solid var(--border);
   margin: 40px 0;
   padding-top: 30px;
+  position: relative;
+}
+
+/* Timeline Wrapper */
+#timeline-wrapper {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  margin: 40px 0;
+}
+
+/* Names Column */
+#timeline-names {
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  color: var(--text-primary);
+  font-family: monospace;
+  font-size: 10px;
+  min-width: 250px;
+  overflow-x: auto;
+  position: sticky;
+  top: 0;
+}
+
+/* Timeline Lines Column */
+#timeline-lines {
+  min-height: 200px;
+  overflow-x: auto;
+  position: relative;
+}
+
+/* Column Headers */
+.column-header {
+  align-items: center;
+  background: var(--primary);
+  color: #fff;
+  display: flex;
+  font-size: 14px;
+  font-weight: 600;
+  height: 56px;
+  padding: 0;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+#timeline-names .column-header {
+  padding-left: 10px;
+}
+
+#timeline-lines .column-header {
+  overflow: hidden;
+  padding: 0;
+}
+
+/* Timeline Ruler */
+#timeline-ruler-header {
   position: relative;
 }
 
@@ -53,23 +113,31 @@ body {
   top: 40px;
 }
 
+/* Time Markers */
 .time-marker {
   border-left: 1px solid var(--border);
   height: 100%;
   position: absolute;
   top: 0;
   width: 1px;
+}
 
-  span {
-    color: var(--text-secondary);
-    font-size: 10px;
-    left: -30px;
-    position: absolute;
-    top: -20px;
-    transform-origin: left;
-    transform: rotate(-45deg);
-    white-space: nowrap;
-  }
+.time-marker span {
+  color: var(--text-secondary);
+  font-size: 10px;
+  position: absolute;
+  top: 30%;
+  transform-origin: left top;
+  transform: rotate(-45deg);
+  white-space: nowrap;
+}
+
+/* Timeline Rows & Items */
+.timeline-row {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  height: 25px;
+  position: relative;
 }
 
 .timeline-item {
@@ -90,6 +158,7 @@ body {
   transform: translateY(-1px);
 }
 
+/* Timeline Item Colors */
 .timeline-item.application {
   background: var(--timeline-application);
 }
@@ -106,16 +175,17 @@ body {
   background: var(--timeline-startup);
 }
 
+/* Timeline Labels & Duration */
 .timeline-label {
   color: var(--text-primary);
   font-family: var(--font-mono);
-  font-size: 11px; /* reduced font size */
-  max-width: 200px; /* limit width */
-  overflow: hidden; /* hide overflow */
+  font-size: 11px;
+  max-width: 200px;
+  overflow: hidden;
   position: absolute;
   right: calc(100% + 10px);
   text-align: right;
-  text-overflow: ellipsis; /* add ellipsis for long text */
+  text-overflow: ellipsis;
   top: 50%;
   transform: translateY(-50%);
   white-space: nowrap;
@@ -131,6 +201,7 @@ body {
   transform: translateY(-50%);
 }
 
+/* Tooltip */
 .tooltip {
   background: var(--text-primary);
   border-radius: var(--radius);
@@ -149,6 +220,7 @@ body {
   z-index: 1000;
 }
 
+/* Data & Upload Sections */
 .data-section {
   background: linear-gradient(
     135deg,
@@ -175,6 +247,7 @@ body {
   margin: 5px auto;
 }
 
+/* Timeline Header */
 .timeline-header {
   background: var(--primary);
   border-radius: var(--radius);
@@ -183,56 +256,10 @@ body {
   font-size: 13px;
   gap: 20px;
   margin: 10px 0 20px 250px;
-  padding: 10px 10px;
+  padding: 10px;
 }
 
-#timeline-wrapper {
-  background: var(--surface);
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  display: grid;
-  gap: 0;
-  grid-template-columns: 280px 1fr;
-  margin: 40px 0;
-}
-
-.column-header {
-  align-items: center;
-  background: var(--primary);
-  border-bottom: none;
-  color: #fff;
-  display: flex;
-  font-size: 14px;
-  font-weight: 600;
-  height: 56px;
-  padding: 0;
-  position: sticky;
-  top: 0;
-  z-index: 2;
-}
-
-#timeline-names .column-header {
-  padding-left: 10px;
-}
-
-#timeline-lines .column-header {
-  overflow: hidden;
-  padding: 0;
-}
-
-/* Names column style */
-#timeline-names {
-  background: var(--surface);
-  border-right: 1px solid var(--border);
-  color: var(--text-primary);
-  font-family: monospace;
-  font-size: 10px;
-  left: 0;
-  min-width: 250px;
-  overflow-x: auto;
-  position: sticky;
-}
-
+/* Names Column Labels */
 .name-label {
   color: var(--text-primary);
   padding: 4px 10px;
@@ -247,62 +274,7 @@ body {
   display: none;
 }
 
-/* Timeline column style */
-#timeline-lines {
-  min-height: 200px;
-  overflow-x: auto;
-  position: relative;
-}
-
-.timeline-ruler {
-  background: transparent;
-  border: none;
-  height: 100%;
-  position: relative;
-  width: 100%;
-}
-
-.time-marker {
-  border-left: 1px solid var(--border);
-  height: 100%;
-  position: absolute;
-  top: 0;
-  width: 1px;
-}
-
-.time-marker span {
-  color: var(--text-secondary);
-  font-size: 10px;
-  left: 2px;
-  position: absolute;
-  top: 5px;
-  transform-origin: left top;
-  transform: rotate(-45deg);
-  white-space: nowrap;
-}
-
-/* Timeline rows and event styling remain unchanged */
-.timeline-row {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  height: 25px;
-  position: relative;
-}
-
-.timeline-item {
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-sm);
-  cursor: pointer;
-  height: 20px;
-  position: absolute;
-  transition: all 0.2s ease;
-}
-
-.timeline-item:hover {
-  box-shadow: var(--shadow);
-  transform: translateY(-1px);
-}
-
+/* Metadata Section */
 #metadata-section {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -336,6 +308,7 @@ body {
   font-weight: 600;
 }
 
+/* Input & JSON Editor */
 .input-section {
   align-items: flex-start;
   display: flex;
@@ -345,19 +318,20 @@ body {
 .json-editor {
   box-sizing: border-box;
   width: 100%;
-
-  textarea {
-    border-radius: 4px;
-    border: 1px solid var(--border);
-    box-sizing: border-box;
-    font-family: var(--font-mono);
-    height: 200px;
-    padding: 10px;
-    resize: vertical;
-    width: 100%;
-  }
 }
 
+.json-editor textarea {
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  box-sizing: border-box;
+  font-family: var(--font-mono);
+  height: 200px;
+  padding: 10px;
+  resize: vertical;
+  width: 100%;
+}
+
+/* Intro Section */
 .intro-section {
   background: var(--surface);
   border-radius: var(--radius);
@@ -366,6 +340,7 @@ body {
   padding: 20px;
 }
 
+/* Legend */
 .legend-items {
   display: flex;
   flex-wrap: wrap;
@@ -401,6 +376,7 @@ body {
   background: var(--timeline-startup);
 }
 
+/* Instruction Text */
 .instruction-text {
   color: var(--text-primary);
   font-size: 14px;
