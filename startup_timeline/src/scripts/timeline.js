@@ -265,7 +265,7 @@ function renderMetadata(data) {
         </div>
         <div class="metadata-item">
           <span class="metadata-label">Start Time:</span>
-          <span class="metadata-value">${startTime.toLocaleString()}</span>
+          <span class="metadata-value">${startTime.toISOString()}</span>
         </div>
         <div class="metadata-item">
           <span class="metadata-label">Total Steps:</span>
@@ -286,7 +286,7 @@ function createTimelineRuler(startTime, endTime) {
         marker.className = 'time-marker';
         marker.style.left = `${(i / markers) * 100}%`;
         const time = new Date(startTime + duration * (i / markers));
-        marker.innerHTML = `<span>${time.toLocaleTimeString()}</span>`;
+        marker.innerHTML = `<span>${time.toISOString().split('T')[1]}</span>`;
         ruler.appendChild(marker);
     }
     return ruler;
@@ -323,7 +323,7 @@ function showEnhancedTooltip(e, event, startTime) {
       <strong>Step: ${event.startupStep.name} (ID: ${event.startupStep.id})</strong><br>
       Duration: ${formatDurationAccurate(duration)}<br>
       Start: +${relativeStart.toFixed(3)}s<br>
-      Time: ${start.toLocaleString()}<br>
+      Time: ${start.toISOString()}<br>
       Tags: ${tagsContent}
       ${event.startupStep.parentId !== undefined ? `<br>Parent ID: ${event.startupStep.parentId}` : ''}
       <br>Direct Children: ${event.directChildren}
