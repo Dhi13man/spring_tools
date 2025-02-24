@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
         reader.onload = (event) => {
             try {
                 const data = JSON.parse(event.target.result);
-                // Update the editor with formatted JSON
                 jsonEditor.value = JSON.stringify(data, null, 2);
                 renderTimeline(data);
             } catch (error) {
@@ -21,13 +20,10 @@ document.addEventListener('DOMContentLoaded', () => {
         reader.readAsText(file);
     });
 
-    // Handle manual JSON editing
+    // Handle manual JSON editing with debounce
     let debounceTimer;
     jsonEditor.addEventListener('input', () => {
-        // Clear previous timer
         clearTimeout(debounceTimer);
-
-        // Set new timer to update after typing stops
         debounceTimer = setTimeout(() => {
             try {
                 const jsonText = jsonEditor.value.trim();
@@ -35,27 +31,40 @@ document.addEventListener('DOMContentLoaded', () => {
                     clearTimeline();
                     return;
                 }
-
                 const data = JSON.parse(jsonText);
                 renderTimeline(data);
             } catch (error) {
                 console.error('Invalid JSON:', error);
             }
-        }, 500); // Wait 500ms after typing stops
+        }, 500);
     });
 });
 
 function clearTimeline() {
     const elements = ['timeline-names', 'timeline-lines', 'timeline-ruler-header', 'metadata-section'];
     elements.forEach(id => {
-        const element = document.getElementById(id);
-        if (element) element.innerHTML = '';
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = '';
+    });
+}
+
+// Ensure each event has a valid startupStep with id and name
+function transformEvents(events) {
+    events.forEach((event, index) => {
+        if (!event.startupStep) {
+            event.startupStep = { id: index, name: `Event ${index}` };
+        }
+        if (!event.startupStep.id) {
+            event.startupStep.id = index;
+        }
+        if (!event.startupStep.name) {
+            event.startupStep.name = `Event ${event.startupStep.id}`;
+        }
     });
 }
 
 function computeChildrenCounts(events) {
     const counts = new Map();
-    // Initialize counts
     events.forEach(e => counts.set(e.startupStep.id, 0));
 
     // Count direct children
@@ -65,7 +74,7 @@ function computeChildrenCounts(events) {
         }
     });
 
-    // Compute total descendants (recursive)
+    // Recursively count total descendants
     function getTotalDescendants(eventId) {
         let total = counts.get(eventId) || 0;
         events.filter(e => e.startupStep.parentId === eventId)
@@ -75,10 +84,9 @@ function computeChildrenCounts(events) {
         return total;
     }
 
-    // Update events with their total descendant counts
     events.forEach(e => {
-        e.totalDescendants = getTotalDescendants(e.startupStep.id);
         e.directChildren = counts.get(e.startupStep.id) || 0;
+        e.totalDescendants = getTotalDescendants(e.startupStep.id);
     });
 }
 
@@ -86,20 +94,17 @@ function buildTimelineTree(events) {
     const eventMap = new Map();
     const rootEvents = [];
 
-    // First pass: Create nodes for all events
+    // Create node for each event
     events.forEach(event => {
-        eventMap.set(event.startupStep.id, {
-            ...event,
-            children: [],
-            level: 0
-        });
+        eventMap.set(event.startupStep.id, { ...event, children: [], level: 0 });
     });
 
-    // Second pass: Build parent-child relationships and calculate levels
+    // Build parent-child relationships and set depth level
     events.forEach(event => {
         const currentEvent = eventMap.get(event.startupStep.id);
-        if (event.startupStep.parentId !== undefined && event.startupStep.parentId !== null) {
-            const parentEvent = eventMap.get(event.startupStep.parentId);
+        const parentId = event.startupStep.parentId;
+        if (parentId !== undefined && parentId !== null) {
+            const parentEvent = eventMap.get(parentId);
             if (parentEvent) {
                 parentEvent.children.push(currentEvent);
                 currentEvent.level = parentEvent.level + 1;
@@ -111,11 +116,10 @@ function buildTimelineTree(events) {
         }
     });
 
-    // Sort children by start time
+    // Sort events by start time
     const sortByStartTime = (a, b) => new Date(a.startTime) - new Date(b.startTime);
-
     const sortChildrenRecursive = (event) => {
-        if (event.children && event.children.length > 0) {
+        if (event.children.length) {
             event.children.sort(sortByStartTime);
             event.children.forEach(sortChildrenRecursive);
         }
@@ -130,115 +134,36 @@ function buildTimelineTree(events) {
 function calculateEventPosition(event, totalWidth, startTime, duration) {
     const eventStart = new Date(event.startTime) - startTime;
     const eventDuration = new Date(event.endTime) - new Date(event.startTime);
-
     const left = (eventStart / duration) * totalWidth;
-    const width = Math.max((eventDuration / duration) * totalWidth, 2); // Minimum width of 2px
-
+    const width = Math.max((eventDuration / duration) * totalWidth, 2); // Minimum width
     return { left, width };
 }
 
-function renderTimelineRow(event, container, totalWidth, startTime, duration, rowHeight) {
-    const { left, width } = calculateEventPosition(event, totalWidth, startTime, duration);
-
-    const rowDiv = document.createElement('div');
-    rowDiv.className = 'timeline-row';
-    rowDiv.style.height = `${rowHeight}px`;
-
-    const eventDiv = document.createElement('div');
-    eventDiv.className = `timeline-item ${getEventType(event.startupStep.name)}`;
-    eventDiv.style.left = `${left}px`;
-    eventDiv.style.width = `${width}px`;
-    eventDiv.style.top = '2px';
-
-    eventDiv.title = `${event.startupStep.name}\nStart: ${new Date(event.startTime).toISOString()}\nDuration: ${event.duration}`;
-
-    rowDiv.appendChild(eventDiv);
-    container.appendChild(rowDiv);
-
-    // Render child events recursively
-    if (event.children && event.children.length > 0) {
-        event.children.forEach(child => {
-            renderTimelineRow(child, container, totalWidth, startTime, duration, rowHeight);
-        });
-    }
-}
 function toggleChildren(rowId, isExpanded) {
     const childRows = document.querySelectorAll(`.child-of-${rowId}`);
-
     childRows.forEach(row => {
-        // Remove inline display manipulation
         row.classList.toggle('collapsed', !isExpanded);
-
-        // Find if this row has a toggle button (meaning it's a parent)
         const toggleButton = row.querySelector('.name-label span');
         if (toggleButton) {
-            // Update toggle button state
             toggleButton.textContent = isExpanded ? '▼' : '▶';
-
-            // Get the ID of this child to recursively collapse its children
-            const childId = row.className
-                .split(' ')
+            const childId = row.className.split(' ')
                 .find(cls => cls.startsWith('row-id-'))
                 ?.replace('row-id-', '');
-
             if (childId) {
-                // Recursively collapse children
                 toggleChildren(childId, isExpanded);
             }
         }
     });
 }
 
-function transformEvents(events) {
-    // First ensure all events have startupStep
-    events.forEach((event, index) => {
-        if (!event.startupStep) {
-            event.startupStep = {
-                id: index,
-                name: `Event ${index}`
-            };
-        }
-        // Ensure ID exists
-        if (!event.startupStep.id) {
-            event.startupStep.id = index;
-        }
-        // Ensure name exists
-        if (!event.startupStep.name) {
-            event.startupStep.name = `Event ${event.startupStep.id}`;
-        }
-    });
-
-    // Build parent-child relationships
-    const eventsById = new Map();
-    events.forEach(event => {
-        eventsById.set(event.startupStep.id, event);
-    });
-
-    // Now connect parents and children
-    events.forEach(event => {
-        if (event.startupStep.parentId !== undefined) {
-            const parent = eventsById.get(event.startupStep.parentId);
-            if (parent) {
-                // Ensure parent has children array
-                if (!parent.children) {
-                    parent.children = [];
-                }
-                parent.children.push(event);
-            }
-        }
-    });
-}
-
 function renderTimeline(data) {
-    // Get references to required DOM elements
     const namesColumn = document.getElementById('timeline-names');
     const timelineColumn = document.getElementById('timeline-lines');
     const rulerHeader = document.getElementById('timeline-ruler-header');
     const metadataSection = document.getElementById('metadata-section');
 
-    // Check if all required elements exist
     if (!namesColumn || !timelineColumn || !rulerHeader || !metadataSection) {
-        console.error('Required DOM elements not found. Make sure the following elements exist:', {
+        console.error('Missing required DOM elements.', {
             'timeline-names': !!namesColumn,
             'timeline-lines': !!timelineColumn,
             'timeline-ruler-header': !!rulerHeader,
@@ -248,48 +173,35 @@ function renderTimeline(data) {
     }
 
     const events = data.timeline.events;
-
-    // Transform events first
     transformEvents(events);
-
-    // Add metadata rendering
     renderMetadata(data);
 
     events.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
-
     const startTime = new Date(data.timeline.startTime).getTime();
     const endTime = Math.max(...events.map(e => new Date(e.endTime).getTime()));
     const totalDuration = endTime - startTime;
 
     computeChildrenCounts(events);
     const rootEvents = buildTimelineTree(events);
-
-    // Setup timeline ruler header
     rulerHeader.appendChild(createTimelineRuler(startTime, endTime));
-
-    // Get available width of timeline area
     const containerWidth = timelineColumn.offsetWidth;
 
-    // Render timeline recursively
+    // Recursively render each event and its children
     function renderEvent(event, depth = 0) {
-        // Create name row
+        // Create name row with indentation and collapse toggle if needed
         const nameRow = document.createElement('div');
         nameRow.className = `timeline-row row-id-${event.startupStep.id}`;
         if (event.startupStep.parentId !== undefined) {
             nameRow.classList.add(`child-of-${event.startupStep.parentId}`);
         }
-
         const nameLabel = document.createElement('div');
         nameLabel.className = 'name-label';
-        // Remove inline padding, add indentation class
         for (let i = 0; i < depth; i++) {
             nameLabel.classList.add('child-step');
         }
         nameLabel.textContent = event.startupStep.name;
 
-        // Add expand/collapse indicator if has children
-        const children = event.children || [];
-        if (children.length > 0) {
+        if ((event.children || []).length > 0) {
             const toggleIcon = document.createElement('span');
             toggleIcon.textContent = '▼';
             toggleIcon.style.cursor = 'pointer';
@@ -297,7 +209,7 @@ function renderTimeline(data) {
                 const isExpanding = toggleIcon.textContent === '▶';
                 toggleIcon.textContent = isExpanding ? '▼' : '▶';
                 toggleChildren(event.startupStep.id, isExpanding);
-                e.stopPropagation(); // Prevent event bubbling
+                e.stopPropagation();
             });
             nameLabel.prepend(toggleIcon, ' ');
         }
@@ -305,7 +217,7 @@ function renderTimeline(data) {
         nameRow.appendChild(nameLabel);
         namesColumn.appendChild(nameRow);
 
-        // Create timeline row
+        // Create timeline row for the event
         const timelineRow = document.createElement('div');
         timelineRow.className = 'timeline-row';
         if (event.startupStep.parentId !== undefined) {
@@ -316,16 +228,15 @@ function renderTimeline(data) {
         const eventEnd = new Date(event.endTime).getTime();
         const relativeStart = ((eventStart - startTime) / totalDuration) * containerWidth;
         const width = ((eventEnd - eventStart) / totalDuration) * containerWidth;
-
         const item = document.createElement('div');
         item.className = `timeline-item ${getEventType(event.startupStep.name)}`;
         item.style.left = `${relativeStart}px`;
         item.style.width = `${Math.max(2, width)}px`;
 
-        const duration = document.createElement('div');
-        duration.className = 'timeline-duration';
-        duration.textContent = formatDurationAccurate(eventEnd - eventStart);
-        item.appendChild(duration);
+        const durationDiv = document.createElement('div');
+        durationDiv.className = 'timeline-duration';
+        durationDiv.textContent = formatDurationAccurate(eventEnd - eventStart);
+        item.appendChild(durationDiv);
 
         item.addEventListener('mouseover', (e) => showEnhancedTooltip(e, event, startTime));
         item.addEventListener('mouseout', hideTooltip);
@@ -333,43 +244,40 @@ function renderTimeline(data) {
         timelineRow.appendChild(item);
         timelineColumn.appendChild(timelineRow);
 
-        // Recursively render children
-        children.forEach(child => renderEvent(child, depth + 1));
+        // Render children recursively
+        (event.children || []).forEach(child => renderEvent(child, depth + 1));
     }
 
-    // Start rendering from root events
     rootEvents.forEach(event => renderEvent(event));
 }
 
 function renderMetadata(data) {
     const startTime = new Date(data.timeline.startTime);
-    // Calculate end time from the latest event end time
     const endTime = new Date(Math.max(...data.timeline.events.map(e => new Date(e.endTime).getTime())));
     const totalDuration = endTime - startTime;
-
     const metadataSection = document.getElementById('metadata-section');
+
     metadataSection.innerHTML = `
-        <div class="metadata-grid">
-            <div class="metadata-item">
-                <span class="metadata-label">Total Startup Time:</span>
-                <span class="metadata-value">${formatDurationAccurate(totalDuration)}</span>
-            </div>
-            <div class="metadata-item">
-                <span class="metadata-label">Start Time:</span>
-                <span class="metadata-value">${startTime.toLocaleTimeString()}</span>
-            </div>
-            <div class="metadata-item">
-                <span class="metadata-label">Total Steps:</span>
-                <span class="metadata-value">${data.timeline.events.length}</span>
-            </div>
+      <div class="metadata-grid">
+        <div class="metadata-item">
+          <span class="metadata-label">Total Startup Time:</span>
+          <span class="metadata-value">${formatDurationAccurate(totalDuration)}</span>
         </div>
+        <div class="metadata-item">
+          <span class="metadata-label">Start Time:</span>
+          <span class="metadata-value">${startTime.toLocaleTimeString()}</span>
+        </div>
+        <div class="metadata-item">
+          <span class="metadata-label">Total Steps:</span>
+          <span class="metadata-value">${data.timeline.events.length}</span>
+        </div>
+      </div>
     `;
 }
 
 function createTimelineRuler(startTime, endTime) {
     const ruler = document.createElement('div');
     ruler.className = 'timeline-ruler';
-
     const duration = endTime - startTime;
     const markers = 15; // More granular markers
 
@@ -377,13 +285,10 @@ function createTimelineRuler(startTime, endTime) {
         const marker = document.createElement('div');
         marker.className = 'time-marker';
         marker.style.left = `${(i / markers) * 100}%`;
-
-        const time = new Date(startTime + (duration * (i / markers)));
+        const time = new Date(startTime + duration * (i / markers));
         marker.innerHTML = `<span>${time.toISOString().split('T')[1].slice(0, -1)}</span>`;
-
         ruler.appendChild(marker);
     }
-
     return ruler;
 }
 
@@ -394,7 +299,6 @@ function getEventType(name) {
     if (name.includes('spring.boot.web')) return 'web';
     return 'startup';
 }
-
 
 function showEnhancedTooltip(e, event, startTime) {
     const timelineContainer = document.getElementById('timeline-wrapper');
@@ -411,38 +315,32 @@ function showEnhancedTooltip(e, event, startTime) {
     const duration = end.getTime() - start.getTime();
     const relativeStart = (start.getTime() - startTime) / 1000;
 
-    const tagsContent = (event.startupStep.tags && event.startupStep.tags.length)
+    const tagsContent = event.startupStep.tags && event.startupStep.tags.length
         ? event.startupStep.tags.map(tag => `${tag.key}: ${tag.value}`).join(', ')
         : 'No tags';
 
     tooltip.innerHTML = `
-        <strong>Step: ${event.startupStep.name} (ID: ${event.startupStep.id})</strong><br>
-        Duration: ${formatDurationAccurate(duration)}<br>
-        Start: +${relativeStart.toFixed(3)}s<br>
-        Time: ${start.toISOString().split('T')[1].slice(0, -1)}<br>
-        Tags: ${tagsContent}
-        ${event.startupStep.parentId !== undefined ? `<br>Parent ID: ${event.startupStep.parentId}` : ''}
-        <br>Direct Children: ${event.directChildren}
-        <br>Total Descendants: ${event.totalDescendants}
+      <strong>Step: ${event.startupStep.name} (ID: ${event.startupStep.id})</strong><br>
+      Duration: ${formatDurationAccurate(duration)}<br>
+      Start: +${relativeStart.toFixed(3)}s<br>
+      Time: ${start.toISOString().split('T')[1].slice(0, -1)}<br>
+      Tags: ${tagsContent}
+      ${event.startupStep.parentId !== undefined ? `<br>Parent ID: ${event.startupStep.parentId}` : ''}
+      <br>Direct Children: ${event.directChildren}
+      <br>Total Descendants: ${event.totalDescendants}
     `;
 
     const rect = timelineContainer.getBoundingClientRect();
     const x = Math.min(e.pageX + 10, window.innerWidth - 300);
     const y = Math.min(e.pageY + 10, window.innerHeight - 100);
-
     tooltip.style.setProperty('--tooltip-left', `${x}px`);
     tooltip.style.setProperty('--tooltip-top', `${y}px`);
 
     document.body.appendChild(tooltip);
 }
 
-function formatDuration(duration) {
-    // Convert PT0.123456S format to ms
-    return duration.replace(/PT|S/g, '')
-        .split('.')
-        .reduce((acc, val, i) => {
-            return i === 0 ? val * 1000 : acc + Number(val.padEnd(3, '0'));
-        }, 0) + 'ms';
+function hideTooltip() {
+    document.querySelectorAll('.tooltip').forEach(t => t.remove());
 }
 
 function formatDurationAccurate(ms) {
@@ -451,19 +349,4 @@ function formatDurationAccurate(ms) {
     const minutes = Math.floor(ms / 60000);
     const seconds = ((ms % 60000) / 1000).toFixed(2);
     return `${minutes}m ${seconds}s`;
-}
-
-function hideTooltip() {
-    const tooltips = document.querySelectorAll('.tooltip');
-    tooltips.forEach(t => t.remove());
-}
-
-function parseHighPrecisionTime(isoString) {
-    // Extract fractional parts to preserve beyond ms
-    const d = new Date(isoString);
-    const baseMs = d.getTime();
-    const fractionMatch = isoString.match(/\.(\d+)Z$/);
-    if (!fractionMatch) return baseMs;
-    const fraction = fractionMatch[1].padEnd(9, '0');
-    return baseMs + parseInt(fraction, 10) / 1e6;
 }
