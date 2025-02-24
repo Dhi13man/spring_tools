@@ -1,0 +1,7 @@
+name = "spring-startup-visualizer"
+main = "src/index.html"
+compatibility_date = "2025-02-24"
+
+[site]
+bucket = "./src"
+entry-point = "workers-site"
