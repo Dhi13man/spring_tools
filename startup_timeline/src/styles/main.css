@@ -150,7 +150,7 @@ body {
   box-shadow: var(--shadow);
 }
 
-.upload-section {
+.data-section {
   margin: 24px 0;
   padding: 32px;
   border: 2px dashed var(--border);
@@ -360,4 +360,49 @@ body {
   border-radius: 4px;
   resize: vertical;
   box-sizing: border-box;
+}
+
+.intro-section {
+  margin: 20px 0;
+  padding: 20px;
+  background: var(--surface);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+
+.intro-section h3 {
+  margin: 0 0 15px 0;
+  font-size: 16px;
+  color: var(--text-primary);
+}
+
+.legend-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.legend-color {
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius);
+}
+
+.legend-color.application { background: var(--success); }
+.legend-color.context { background: var(--primary); }
+.legend-color.beans { background: var(--beans); }
+.legend-color.web { background: var(--warning); }
+.legend-color.startup { background: var(--secondary); }
+
+.instruction-text {
+  margin-bottom: 15px;
+  color: var(--text-primary);
+  font-size: 14px;
 }

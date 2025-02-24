@@ -1,31 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
+  <head>
+    <meta charset="utf-8" />
     <title>Spring Boot Startup Timeline</title>
-    <link rel="stylesheet" href="styles/main.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body>
+    <link rel="stylesheet" href="styles/main.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
     <div class="container">
-        <h1>Spring Boot Startup Timeline</h1>
+      <h1>Spring Boot Startup Time Visualiser</h1>
+      
+      <div class="intro-section">
+        <p>Visualise and analyse your Spring Boot application's startup sequence. This tool helps you understand initialization timing and dependencies between different components.</p>
+        <h3>Timeline Categories</h3>
+        <div class="legend-items">
+          <div class="legend-item">
+            <span class="legend-color application"></span>
+            <span>Application Components</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-color context"></span>
+            <span>Context Initialization</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-color beans"></span>
+            <span>Bean Creation</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-color web"></span>
+            <span>Web Configuration</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-color startup"></span>
+            <span>Startup Tasks</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="data-section">
+        <h3>Input Your Data</h3>
+        <p class="instruction-text">Either paste your Spring Boot startup JSON data directly into the text area below, or use the file upload button to load a JSON file.</p>
         <div class="json-editor">
-            <textarea id="jsonEditor" placeholder="Paste your JSON here..."></textarea>
+          <textarea
+            id="jsonEditor"
+            placeholder="Paste your JSON here..."
+          ></textarea>
         </div>
-        <div class="upload-section">
-            <label for="jsonFile" class="upload-label">Upload Spring Boot Startup JSON</label>
-            <input type="file" id="jsonFile" accept=".json" class="upload-label">
+        <label for="jsonFile" class="upload-label"
+          >Upload Spring Boot Startup JSON</label
+        >
+        <input type="file" id="jsonFile" accept=".json" class="upload-label" />
+      </div>
+      <div id="metadata-section"></div>
+      <div id="timeline-wrapper">
+        <div id="timeline-names">
+          <div class="column-header">Step Name</div>
         </div>
-        <div id="metadata-section"></div>
-        <div id="timeline-wrapper">
-            <div id="timeline-names">
-                <div class="column-header">Step Name</div>
-            </div>
-            <div id="timeline-lines">
-                <div class="column-header" id="timeline-ruler-header"></div>
-            </div>
+        <div id="timeline-lines">
+          <div class="column-header" id="timeline-ruler-header"></div>
         </div>
+      </div>
     </div>
     <script src="scripts/timeline.js"></script>
-</body>
+  </body>
 </html>
