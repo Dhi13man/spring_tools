@@ -2,21 +2,42 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Spring Boot Startup Time Analysis & Optimization Tool | Performance Visualizer</title>
-    <meta name="description" content="Diagnose and fix Spring Boot startup performance issues with our interactive timeline visualizer. Analyze initialization timing, identify bottlenecks, and optimize your application's startup sequence. Free online tool for Spring developers." />
-    <meta name="keywords" content="Spring Boot, startup time, performance optimization, startup analysis, Spring Boot actuator, initialization timing, startup sequence, Spring application performance" />
-    
+    <title>
+      Spring Boot Startup Time Analysis Tool | Performance
+      Visualizer
+    </title>
+    <meta
+      name="description"
+      content="Diagnose and fix Java Spring Boot startup performance issues with our interactive timeline visualizer. Analyze initialization timing, identify bottlenecks, and optimize your application's startup sequence. Free online tool for Spring developers."
+    />
+    <meta
+      name="keywords"
+      content="Java, Spring Boot, startup, performance, optimization, analysis, Spring Boot actuator, initialization, timing, sequence, application performance"
+    />
+
     <!-- Open Graph Tags -->
-    <meta property="og:title" content="Spring Boot Startup Time Analysis & Optimization Tool" />
-    <meta property="og:description" content="Visualize and optimize your Spring Boot application's startup sequence. Free interactive timeline tool for debugging startup performance issues." />
+    <meta
+      property="og:title"
+      content="Java Spring Boot Startup Time Analysis & Optimization Tool"
+    />
+    <meta
+      property="og:description"
+      content="Visualize and optimize your Java Spring Boot application's startup sequence. Free interactive timeline tool for debugging startup performance issues."
+    />
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Spring Boot Startup Visualizer" />
-    
+    <meta property="og:site_name" content="Java Spring Boot Startup Visualizer" />
+
     <!-- Twitter Card Tags -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Spring Boot Startup Time Analysis & Optimization Tool" />
-    <meta name="twitter:description" content="Debug Spring Boot startup performance issues with our interactive timeline visualizer" />
-    
+    <meta
+      name="twitter:title"
+      content="Java Spring Boot Startup Time Analysis & Optimization Tool"
+    />
+    <meta
+      name="twitter:description"
+      content="Debug Java Spring Boot startup performance issues with our interactive timeline visualizer"
+    />
+
     <!-- Technical SEO -->
     <meta name="robots" content="index, follow" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -25,27 +46,35 @@
 
     <!-- Structured Data -->
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "Spring Boot Startup Time Analyzer",
-      "applicationCategory": "DeveloperApplication",
-      "operatingSystem": "Any",
-      "description": "Interactive tool for analyzing and optimizing Spring Boot application startup performance",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Spring Boot Startup Time Analyzer",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Any",
+        "description": "Interactive tool for analyzing and optimizing Spring Boot application startup performance",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
       }
-    }
     </script>
   </head>
   <body>
     <div class="container">
-      <h1>Spring Boot Startup Time Visualizer - Optimize Application Startup</h1>
-      
+      <h1>
+        Spring Boot Startup Time Visualizer - Optimize Application Startup
+      </h1>
+
       <div class="intro-section">
-        <p>Visualise and analyse your Spring Boot application's startup sequence. This tool helps you understand initialization timing, identify performance bottlenecks, and dependencies between different components, leading to faster startup times. Optimise your Spring Boot application's startup performance with our interactive timeline.</p>
+        <p>
+          Visualise and analyse your Spring Boot application's startup sequence.
+          This tool helps you understand initialization timing, identify
+          performance bottlenecks, and dependencies between different
+          components, leading to faster startup times. Optimise your Spring Boot
+          application's startup performance with our interactive timeline.
+        </p>
         <div class="legend-items">
           <div class="legend-item">
             <span class="legend-color application"></span>
@@ -71,8 +100,35 @@
       </div>
 
       <div class="data-section">
-        <label for="jsonFile" class="upload-label"><h3>Input Your <a href="https://docs.spring.io/spring-boot/api/rest/actuator/startup.html" target="_blank" rel="noopener noreferrer">/actuator/startup</a> JSON</h3></label>
-        <p class="instruction-text">You can get the JSON Startup data from your Spring Boot application by <a href="https://www.baeldung.com/spring-boot-actuator-startup" target="_blank" rel="noopener noreferrer">enabling and accessing</a> the <a href="https://docs.spring.io/spring-boot/api/rest/actuator/startup.html" target="_blank" rel="noopener noreferrer">Actuator</a> endpoint <code>/actuator/startup</code>.</p>
+        <label for="jsonFile" class="upload-label"
+          ><h3>
+            Input Your
+            <a
+              href="https://docs.spring.io/spring-boot/api/rest/actuator/startup.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              >/actuator/startup</a
+            >
+            JSON
+          </h3></label
+        >
+        <p class="instruction-text">
+          You can get the JSON Startup data from your Spring Boot application by
+          <a
+            href="https://www.baeldung.com/spring-boot-actuator-startup"
+            target="_blank"
+            rel="noopener noreferrer"
+            >enabling and accessing</a
+          >
+          the
+          <a
+            href="https://docs.spring.io/spring-boot/api/rest/actuator/startup.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Actuator</a
+          >
+          endpoint <code>/actuator/startup</code>.
+        </p>
         <div class="json-editor">
           <textarea
             id="jsonEditor"
@@ -84,7 +140,11 @@
       <div id="metadata-section"></div>
       <div class="filter-section">
         <input id="tagFilter" type="text" placeholder="Tag includes..." />
-        <input id="durationFilter" type="number" placeholder="Min duration (ms)" />
+        <input
+          id="durationFilter"
+          type="number"
+          placeholder="Min duration (ms)"
+        />
       </div>
       <div id="timeline-wrapper">
         <div id="timeline-names">
@@ -98,6 +158,17 @@
       </div>
     </div>
     <script src="scripts/timeline.js"></script>
-    <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="dhi13man" data-description="Support me on Buy me a coffee!" data-message="" data-color="#5F7FFF" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
+    <script
+      data-name="BMC-Widget"
+      data-cfasync="false"
+      src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js"
+      data-id="dhi13man"
+      data-description="Support me on Buy me a coffee!"
+      data-message=""
+      data-color="#5F7FFF"
+      data-position="Right"
+      data-x_margin="18"
+      data-y_margin="18"
+    ></script>
   </body>
 </html>

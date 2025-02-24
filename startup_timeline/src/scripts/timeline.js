@@ -316,42 +316,59 @@ function getEventType(name) {
 }
 
 function showEnhancedTooltip(e, event, startTime) {
-    const timelineContainer = document.getElementById('timeline-wrapper');
-    if (!timelineContainer) {
-        console.error('Timeline wrapper element not found');
-        return;
-    }
+    const timelineWrapper = document.getElementById('timeline-wrapper');
+    const timelineItem = e.target;
+    const wrapperRect = timelineWrapper.getBoundingClientRect();
+    const itemRect = timelineItem.getBoundingClientRect();
 
     const tooltip = document.createElement('div');
     tooltip.className = 'tooltip';
 
+    // Create tooltip content (unchanged)
     const start = new Date(event.startTime);
     const end = new Date(event.endTime);
     const duration = end.getTime() - start.getTime();
     const relativeStart = (start.getTime() - startTime) / 1000;
-
     const tagsContent = event.startupStep.tags && event.startupStep.tags.length
         ? event.startupStep.tags.map(tag => `${tag.key}: ${tag.value}`).join(', ')
         : 'No tags';
 
     tooltip.innerHTML = `
-      <strong>Step: ${event.startupStep.name} (ID: ${event.startupStep.id})</strong><br>
-      Duration: ${formatDurationAccurate(duration)}<br>
-      Start: +${relativeStart.toFixed(3)}s<br>
-      Time: ${start.toISOString()}<br>
-      Tags: ${tagsContent}
-      ${event.startupStep.parentId !== undefined ? `<br>Parent ID: ${event.startupStep.parentId}` : ''}
-      <br>Direct Children: ${event.directChildren}
-      <br>Total Descendants: ${event.totalDescendants}
+        <strong>Step: ${event.startupStep.name} (ID: ${event.startupStep.id})</strong><br>
+        Duration: ${formatDurationAccurate(duration)}<br>
+        Start: +${relativeStart.toFixed(3)}s<br>
+        Time: ${start.toISOString()}<br>
+        Tags: ${tagsContent}
+        ${event.startupStep.parentId !== undefined ? `<br>Parent ID: ${event.startupStep.parentId}` : ''}
+        <br>Direct Children: ${event.directChildren}
+        <br>Total Descendants: ${event.totalDescendants}
     `;
 
-    const rect = timelineContainer.getBoundingClientRect();
-    const x = Math.min(e.pageX + 10, window.innerWidth - 300);
-    const y = Math.min(e.pageY + 10, window.innerHeight - 100);
-    tooltip.style.setProperty('--tooltip-left', `${x}px`);
-    tooltip.style.setProperty('--tooltip-top', `${y}px`);
+    // Add to timeline wrapper and measure
+    tooltip.style.visibility = 'hidden';
+    timelineWrapper.appendChild(tooltip);
+    const tooltipWidth = tooltip.offsetWidth;
+    const tooltipHeight = tooltip.offsetHeight;
 
-    document.body.appendChild(tooltip);
+    // Calculate position relative to timeline wrapper
+    let x = (itemRect.right - wrapperRect.left) + 5;  // 5px offset from item
+    let y = (itemRect.top - wrapperRect.top) + (itemRect.height / 2);
+
+    // Flip to left side if it would overflow right edge
+    if (x + tooltipWidth > wrapperRect.width) {
+        x = (itemRect.left - wrapperRect.left) - tooltipWidth - 5;
+    }
+
+    // Adjust vertical position to center with item
+    y -= tooltipHeight / 2;
+
+    // Keep tooltip within wrapper bounds
+    y = Math.max(0, Math.min(y, wrapperRect.height - tooltipHeight));
+
+    // Set final position and show
+    tooltip.style.setProperty('--tooltip-x', `${x}px`);
+    tooltip.style.setProperty('--tooltip-y', `${y}px`);
+    tooltip.style.visibility = 'visible';
 }
 
 function hideTooltip() {

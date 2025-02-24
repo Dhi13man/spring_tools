@@ -40,7 +40,6 @@ body {
   background: var(--surface);
   border-bottom: 1px solid var(--border);
   border-left: 1px solid var(--border);
-  margin: 40px 0;
   padding-top: 30px;
   position: relative;
 }
@@ -52,7 +51,7 @@ body {
   border-radius: var(--radius);
   display: grid;
   grid-template-columns: 280px 1fr;
-  margin: 40px 0;
+  margin: 10px 0;
   overflow-y: auto;
 }
 
@@ -209,13 +208,12 @@ body {
   color: var(--background);
   font-family: var(--font-mono);
   font-size: 12px;
-  left: var(--tooltip-left, 0);
   line-height: 1.5;
   max-width: 300px;
   padding: 8px 12px;
   pointer-events: none;
-  position: fixed;
-  top: var(--tooltip-top, 0);
+  position: absolute;
+  transform: translate(var(--tooltip-x), var(--tooltip-y));
   white-space: nowrap;
   z-index: 1000;
 }
@@ -278,7 +276,6 @@ body {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  margin: 24px 0;
   padding: 24px;
 }
 
