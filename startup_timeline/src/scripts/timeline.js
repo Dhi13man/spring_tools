@@ -316,7 +316,7 @@ function createTimelineRuler(startTime, endTime) {
     ruler.className = 'timeline-ruler';
     
     const duration = endTime - startTime;
-    const markers = 20; // More granular markers
+    const markers = 15; // More granular markers
     
     for (let i = 0; i <= markers; i++) {
         const marker = document.createElement('div');
