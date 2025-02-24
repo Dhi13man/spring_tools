@@ -27,10 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
         debounceTimer = setTimeout(() => {
             try {
                 const jsonText = jsonEditor.value.trim();
-                if (!jsonText) {
-                    clearTimeline();
-                    return;
-                }
+                if (!jsonText) return;
                 const data = JSON.parse(jsonText);
                 renderTimeline(data);
             } catch (error) {
@@ -39,14 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 500);
     });
 });
-
-function clearTimeline() {
-    const elements = ['timeline-names', 'timeline-lines', 'timeline-ruler-header', 'metadata-section'];
-    elements.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.innerHTML = '';
-    });
-}
 
 // Ensure each event has a valid startupStep with id and name
 function transformEvents(events) {
@@ -129,14 +118,6 @@ function buildTimelineTree(events) {
     rootEvents.forEach(sortChildrenRecursive);
 
     return rootEvents;
-}
-
-function calculateEventPosition(event, totalWidth, startTime, duration) {
-    const eventStart = new Date(event.startTime) - startTime;
-    const eventDuration = new Date(event.endTime) - new Date(event.startTime);
-    const left = (eventStart / duration) * totalWidth;
-    const width = Math.max((eventDuration / duration) * totalWidth, 2); // Minimum width
-    return { left, width };
 }
 
 function toggleChildren(rowId, isExpanded) {
