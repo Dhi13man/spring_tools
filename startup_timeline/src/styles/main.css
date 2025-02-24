@@ -63,7 +63,6 @@ body {
   font-family: monospace;
   font-size: 10px;
   min-width: 250px;
-  overflow-x: auto;
   position: sticky;
   top: 0;
 }
@@ -264,6 +263,9 @@ body {
   color: var(--text-primary);
   padding: 4px 10px;
   white-space: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 260px;
 }
 
 .collapsed {
