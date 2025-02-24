@@ -1,6 +1,6 @@
 # Spring Tools
 
-Spring Tools is a collection of utilities and tools for Spring Boot applications.
+Spring Tools is a collection of utilities and tools for optimising Spring Boot applications.
 
 ## Features
 
