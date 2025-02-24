@@ -179,11 +179,15 @@ function renderTimeline(data) {
     events.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
     const startTime = new Date(data.timeline.startTime).getTime();
     const endTime = Math.max(...events.map(e => new Date(e.endTime).getTime()));
-    const totalDuration = endTime - startTime;
+    const duration = endTime - startTime;
+    const buffer = duration * 0.05; // 5% buffer
+    const bufferedStartTime = startTime - buffer;
+    const bufferedEndTime = endTime + buffer;
+    const bufferedDuration = bufferedEndTime - bufferedStartTime;
 
     computeChildrenCounts(events);
     const rootEvents = buildTimelineTree(events);
-    rulerHeader.appendChild(createTimelineRuler(startTime, endTime));
+    rulerHeader.appendChild(createTimelineRuler(bufferedStartTime, bufferedEndTime));
     const containerWidth = timelineColumn.offsetWidth;
 
     // Recursively render each event and its children
@@ -224,8 +228,8 @@ function renderTimeline(data) {
 
         const eventStart = new Date(event.startTime).getTime();
         const eventEnd = new Date(event.endTime).getTime();
-        const relativeStart = ((eventStart - startTime) / totalDuration) * containerWidth;
-        const width = ((eventEnd - eventStart) / totalDuration) * containerWidth;
+        const relativeStart = ((eventStart - bufferedStartTime) / bufferedDuration) * containerWidth;
+        const width = ((eventEnd - eventStart) / bufferedDuration) * containerWidth;
         const item = document.createElement('div');
         item.className = `timeline-item ${getEventType(event.startupStep.name)}`;
         item.style.left = `${relativeStart}px`;
